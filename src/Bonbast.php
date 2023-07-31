@@ -1,4 +1,5 @@
 <?php
+
 namespace Bonbast;
 
 final class Bonbast {
@@ -62,15 +63,16 @@ final class Bonbast {
      */
     function get_data(string $input): string {
         // Evaluate regex on the input
-        $regex = '#data:"[^"]*"#';
-        preg_match($regex, $input, $match);
+        preg_match('/param: "(.*?)"/', $input, $matches);
 
-        // Sanitize the data
-        $match = end($match);
-        $match = explode(":", $match);
-        $match = str_replace('"', "", $match[1]);
+        // $matches[0] will contain the whole match including 'param: " "'
+        // $matches[1] will contain only the value between the quotation marks
+        $value = $matches[1];
 
-        return $match;
+        // Remove 'param: ' from the original string
+        $modified_string = preg_replace('/param: /', '', $value);
+
+        return $modified_string;
     }
 
     /**
@@ -85,7 +87,7 @@ final class Bonbast {
         curl_setopt($ch, CURLOPT_URL, 'https://bonbast.com/json');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, "data=$token&webdriver=false");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, "param=$token&webdriver=false");
         curl_setopt($ch, CURLOPT_ENCODING, 'gzip, deflate');
 
         $headers = array();
@@ -120,7 +122,7 @@ final class Bonbast {
      *
      * @return string
      */
-    private function get_main_page() : string {
+    private function get_main_page(): string {
         $ch = curl_init();
 
         curl_setopt($ch, CURLOPT_URL, 'https://bonbast.com/');
