@@ -4,7 +4,7 @@ Simple and easy to use package to retrieve the latest updated currency prices fr
 
 # Install
 
-Using composer `composer require evokelektrique/bonbast:dev-master`
+Using composer `composer require evokelektrique/bonbast`
 
 # Usage
 
